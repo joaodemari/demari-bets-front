@@ -37,17 +37,19 @@ export const App = () => {
   }, []);
 
   return (
-    <div className="h-screen w-screen">
-      <header className="text-2xl h-16 border-b-2 flex w-full justify-center border-zinc-200 items-center font-medium">
-        Demari Bets
+    <div className="h-screen w-screen bg-gradient-to-r from-indigo-950 from-10% to-slate-900 to-90% overflow-y-auto">
+      <header className="text-4xl h-16 flex w-full justify-center items-center font-bold bg-slate-100">
+        <h2 className="bg-gradient-to-r from-indigo-950 to-slate-900 text-transparent bg-clip-text">
+          Demari Bets
+        </h2>
       </header>
       <div className="flex flex-col items-center p-10 space-y-4">
-        <div className="grid grid-cols-2 w-1/2 gap-8 ">
+        <div className="grid grid-cols-2 md:w-1/2 gap-8 ">
           <Dialog.Root>
             <Dialog.Trigger asChild>
               <button
                 disabled={numbersAreDrawn}
-                className="disabled:opacity-50 disabled:cursor-not-allowed py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700"
+                className="disabled:opacity-50 disabled:cursor-not-allowed py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700"
               >
                 Criar aposta
               </button>
@@ -68,7 +70,7 @@ export const App = () => {
             {numbers.length > 0 && (
               <div className="flex flex-col items-center space-y-4">
                 <h2 className="text-2xl font-medium">Números sorteados</h2>
-                <div className="grid grid-cols-10 gap-4">
+                <div className="grid grid-cols-5 md:grid-cols-10 gap-4">
                   {numbers.map((_, index) => (
                     <input
                       value={numbers[index]}
@@ -90,10 +92,16 @@ export const App = () => {
                           <th scope="col" className="px-6 py-3">
                             Nome
                           </th>
-                          <th scope="col" className="px-6 py-3">
+                          <th
+                            scope="col"
+                            className="hidden md:table-cell px-6 py-3"
+                          >
                             CPF
                           </th>
-                          <th scope="col" className="px-6 py-3">
+                          <th
+                            scope="col"
+                            className="hidden md:table-cell px-6 py-3"
+                          >
                             Código
                           </th>
                           <th scope="col" className="px-12 py-3">
@@ -110,8 +118,12 @@ export const App = () => {
                             >
                               {winner.user_name}
                             </th>
-                            <td className="px-6 py-4">{winner.user_cpf}</td>
-                            <td className="px-6 py-4">{winner.idUnico}</td>
+                            <td className="px-6 py-4 hidden md:table-cell">
+                              {winner.user_cpf}
+                            </td>
+                            <td className="px-6 py-4 hidden md:table-cell">
+                              {winner.idUnico}
+                            </td>
                             <td className="">
                               {winner.numbers.map((number) => (
                                 <input
@@ -139,58 +151,64 @@ export const App = () => {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-4">
-            <div className="flex gap-4">
-              <h2 className="text-2xl font-medium">Apostas</h2>
+          <div className="flex flex-col items-center gap-4 text-white">
+            <div className="flex flex-col items-center gap-4">
+              <h2 className="text-4xl font-medium">Apostas</h2>
               <button
-                className="bg-gray-200 flex gap-2 items-center px-3 py-1 rounded-lg hover:bg-gray-300"
+                className="bg-slate-200 text-slate-950 font-medium flex gap-2 items-center px-3 py-1 rounded-lg hover:bg-slate-300"
                 onClick={getValidBets}
               >
                 <Reload />
                 <span>Recarregar</span>
               </button>
             </div>
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
-                <tr>
-                  <th scope="col" className="px-6 py-3">
-                    Nome
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    CPF
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Código
-                  </th>
-                  <th scope="col" className="px-12 py-3">
-                    Números
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {validBets.map((bet) => (
-                  <tr className="bg-white border-b ">
-                    <th
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                    >
-                      {bet.user_name}
+            <div className="p-2 bg-slate-100 rounded-lg">
+              <table className=" w-full text-sm text-left rtl:text-right text-gray-500">
+                <thead className="text-xs text-slate-200 uppercase bg-slate-900">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">
+                      Nome
                     </th>
-                    <td className="px-6 py-4">{bet.user_cpf}</td>
-                    <td className="px-6 py-4">{bet.idUnico}</td>
-                    <td className="">
-                      {bet.numbers.map((number) => (
-                        <input
-                          value={number}
-                          disabled
-                          className="w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-500 rounded-lg focus:ring-primary-500 focus:border-primary-500 "
-                        />
-                      ))}
-                    </td>
+                    <th scope="col" className="px-6 py-3 hidden md:table-cell">
+                      CPF
+                    </th>
+                    <th scope="col" className="px-6 py-3 hidden md:table-cell">
+                      Código
+                    </th>
+                    <th scope="col" className="px-12 py-3">
+                      Números
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="">
+                  {validBets.map((bet) => (
+                    <tr className="bg-slate-100 border-t ">
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+                      >
+                        {bet.user_name}
+                      </th>
+                      <td className="px-6 py-4 hidden md:table-cell">
+                        {bet.user_cpf}
+                      </td>
+                      <td className="px-6 py-4 hidden md:table-cell">
+                        {bet.idUnico}
+                      </td>
+                      <td className="">
+                        {bet.numbers.map((number) => (
+                          <input
+                            value={number}
+                            disabled
+                            className="w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-500 rounded-lg focus:ring-primary-500 focus:border-primary-500 "
+                          />
+                        ))}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

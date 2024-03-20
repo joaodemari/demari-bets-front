@@ -28,15 +28,28 @@ export function NewBetModal() {
   };
   const handleIsSurpriseChange = (e: React.FormEvent<HTMLInputElement>) => {
     e.currentTarget.checked ? setSurprise(true) : setSurprise(false);
+    if (e.currentTarget.checked) {
+      const numbers: number[] = [];
+      do {
+        const number = Math.floor(Math.random() * 50) + 1;
+        if (!numbers.includes(number)) {
+          numbers.push(number);
+        }
+      } while (numbers.length < 5);
+      setNumbers(numbers);
+      setDuplicateNumber(false);
+    }
   };
 
   const allNumbersAreValid =
-    (numbers.every((number) => {
+    numbers.every((number) => {
       return number >= 1 && number <= 50;
     }) &&
-      numbers.length === 5 &&
-      !duplicateNumber) ||
-    surprise;
+    numbers.length === 5 &&
+    !duplicateNumber;
+  console.log(allNumbersAreValid);
+  console.log("duplicateNumber", duplicateNumber);
+  console.log("numbers", numbers);
 
   const handleNumberChange = (
     e: React.FormEvent<HTMLInputElement>,
@@ -89,7 +102,7 @@ export function NewBetModal() {
     const data = {
       user_name: name,
       user_cpf: cpf,
-      numbers: surprise ? [] : numbers,
+      numbers,
       surprise,
     };
     console.log(data);
@@ -103,7 +116,7 @@ export function NewBetModal() {
     <Dialog.Portal>
       <Dialog.Overlay className="z-20 fixed w-screen h-screen inset-0 bg-black bg-opacity-75" />
       <Dialog.Content
-        className="bg-white rounded-lg shadow z-20 md:w-1/2 h-fit text-black"
+        className="bg-white rounded-lg shadow z-20 w-full md:w-1/2 h-fit text-black"
         style={{
           position: "fixed",
           top: "50%",
@@ -163,10 +176,10 @@ export function NewBetModal() {
                       <input
                         onInput={(e) => handleNumberChange(e, index)}
                         type="text"
-                        value={surprise ? 0 : numbers[index]}
+                        value={numbers[index]}
                         maxLength={2}
                         disabled={surprise}
-                        className="disabled:opacity-30 block w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-500 rounded-lg focus:ring-primary-500 focus:border-primary-500 "
+                        className="disabled:opacity-70 block w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-500 rounded-lg focus:ring-primary-500 focus:border-primary-500 "
                       />
                     ))}
                   </div>
