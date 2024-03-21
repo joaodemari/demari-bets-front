@@ -2,6 +2,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { NewBetModal } from "./NewBet";
 import { api } from "./lib/axios";
 import { useEffect, useState } from "react";
+import Loader from "./Loader";
 
 export interface Bet {
   idUnico: number;
@@ -85,7 +86,7 @@ export const App = () => {
         {numbersAreDrawn ? (
           loading ? (
             <div className="w-full flex justify-center">
-              <h3 className="text-2xl text-white">Carregando</h3>
+              <Loader />
             </div>
           ) : (
             <div className="flex flex-col text-white">
@@ -163,9 +164,9 @@ export const App = () => {
                   </div>
                 </div>
               ) : (
-                <div className="w-full flex justify-center">
-                  <h3 className="text-2xl text-white">
-                    Sem vencedores nesta rodada
+                <div className="w-full flex mt-14 justify-center">
+                  <h3 className="text-lg text-white">
+                    Sem vencedores nesta rodada :(
                   </h3>
                 </div>
               )}

@@ -4,6 +4,7 @@ import React from "react";
 import { cpfMask } from "./tools/cpfMask";
 import { api } from "./lib/axios";
 import { Bet } from "./App";
+import { set } from "react-hook-form";
 
 export function NewBetModal({
   addValidBet,
@@ -16,6 +17,7 @@ export function NewBetModal({
   const [name, setName] = useState("");
   const [surprise, setSurprise] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [ok, setOk] = useState(false);
 
   const handleCpfInput = (e: React.FormEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
@@ -35,6 +37,13 @@ export function NewBetModal({
       setNumbers(numbers);
       setDuplicateNumber(false);
     }
+  };
+
+  const ShowOk = () => {
+    setOk(true);
+    setTimeout(() => {
+      setOk(false);
+    }, 3000);
   };
 
   const allNumbersAreValid =
@@ -106,6 +115,7 @@ export function NewBetModal({
       .post("/bets", data)
       .then((response: { data: { idUnico: number }; status: number }) => {
         if (response.status === 201) {
+          ShowOk();
           addValidBet({
             numbers,
             idUnico: response.data.idUnico,
@@ -219,6 +229,11 @@ export function NewBetModal({
                 </div>
               </div>
             </div>
+            {ok && (
+              <div className="mb-4 p-2 bg-green-100 border border-green-300 text-green-700 rounded-lg">
+                Aposta realizada com sucesso! 
+              </div>
+            )}
             <button
               type="submit"
               className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed"
