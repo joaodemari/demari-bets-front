@@ -1,19 +1,15 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
-import * as z from "zod";
 import React from "react";
 import { cpfMask } from "./tools/cpfMask";
 import { api } from "./lib/axios";
+import { Bet } from "./App";
 
-export const NewBetSchema = z.object({
-  user_name: z.string(),
-  user_cpf: z.string(),
-  numbers: z.array(z.number()),
-  surprise: z.boolean(),
-});
-export type NewBetInputs = z.infer<typeof NewBetSchema>;
-
-export function NewBetModal() {
+export function NewBetModal({
+  addValidBet,
+}: {
+  addValidBet: (bet: Bet) => void;
+}) {
   const [duplicateNumber, setDuplicateNumber] = useState(true);
   const [numbers, setNumbers] = useState<number[]>([]);
   const [cpf, setCpf] = useState("");
@@ -106,9 +102,19 @@ export function NewBetModal() {
       surprise,
     };
     console.log(data);
-    await api.post("/bets", data).then((res) => {
-      console.log(res.data);
-    });
+    await api
+      .post("/bets", data)
+      .then((response: { data: { idUnico: number }; status: number }) => {
+        if (response.status === 201) {
+          addValidBet({
+            numbers,
+            idUnico: response.data.idUnico,
+            user_name: name,
+            user_cpf: cpf,
+            surprise,
+          });
+        }
+      });
     setIsSubmitting(false);
   };
 
