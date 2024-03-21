@@ -4,7 +4,6 @@ import React from "react";
 import { cpfMask } from "./tools/cpfMask";
 import { api } from "./lib/axios";
 import { Bet } from "./App";
-import { set } from "react-hook-form";
 
 export function NewBetModal({
   addValidBet,
@@ -231,7 +230,7 @@ export function NewBetModal({
             </div>
             {ok && (
               <div className="mb-4 p-2 bg-green-100 border border-green-300 text-green-700 rounded-lg">
-                Aposta realizada com sucesso! 
+                Aposta realizada com sucesso!
               </div>
             )}
             <button

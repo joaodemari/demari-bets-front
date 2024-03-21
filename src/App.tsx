@@ -108,9 +108,9 @@ export const App = () => {
                 <div className="flex w-full flex-col items-center gap-6">
                   <h2 className="text-2xl font-medium mt-4">Ganhadores</h2>
                   <div className="flex flex-col gap-4">
-                    <div className="relative overflow-x-auto">
+                    <div className="p-2 bg-slate-100 rounded-lg">
                       <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
+                        <thead className="text-xs text-slate-200 uppercase bg-slate-900">
                           <tr>
                             <th scope="col" className="px-6 py-3">
                               Nome
@@ -134,7 +134,7 @@ export const App = () => {
                         </thead>
                         <tbody>
                           {winners.map((winner) => (
-                            <tr className="bg-white border-b ">
+                            <tr className="bg-slate-100 border-t ">
                               <th
                                 scope="row"
                                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
