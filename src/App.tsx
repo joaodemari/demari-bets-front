@@ -146,7 +146,7 @@ export const App = () => {
                                 scope="col"
                                 className="hidden md:table-cell px-6 py-3"
                               >
-                                CPF
+                                Prêmio
                               </th>
                               <th
                                 scope="col"
@@ -169,7 +169,7 @@ export const App = () => {
                                   {winner.user_name}
                                 </th>
                                 <td className="px-6 py-4 hidden md:table-cell">
-                                  {winner.user_cpf}
+                                  Um Parabéns!
                                 </td>
                                 <td className="px-6 py-4 hidden md:table-cell">
                                   {winner.idUnico}

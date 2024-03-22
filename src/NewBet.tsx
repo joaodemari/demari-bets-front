@@ -221,18 +221,22 @@ export function NewBetModal({
                 </div>
               </div>
             </div>
-            {ok && (
-              <div className="mb-4 p-2 bg-green-100 border border-green-300 text-green-700 rounded-lg">
-                Aposta realizada com sucesso!
-              </div>
-            )}
-            <button
-              type="submit"
-              className="text-white inline-flex items-center bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={isSubmitting || !allNumbersAreValid || cpf.length < 14}
-            >
-              Fazer Aposta
-            </button>
+            <div className="flex w-full gap-2">
+              <button
+                type="submit"
+                className="text-white items-center bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={
+                  isSubmitting || !allNumbersAreValid || cpf.length < 14
+                }
+              >
+                Fazer Aposta
+              </button>
+              {ok && (
+                <h2 className="p-2 bg-green-100 border border-green-300 text-green-700 rounded-lg">
+                  Aposta realizada com sucesso!
+                </h2>
+              )}
+            </div>
           </form>
         </div>
       </Dialog.Content>
