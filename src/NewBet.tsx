@@ -148,15 +148,11 @@ export function NewBetModal({
           <form className="p-4 md:p-5" onSubmit={handleSubmit}>
             <div className="grid gap-4 mb-4 grid-cols-1">
               <div className="col-span-1 sm:col-span-1">
-                <label
-                  htmlFor="name"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
+                <label className="block mb-2 text-sm font-medium text-gray-900">
                   Nome do apostador
                 </label>
                 <input
                   type="text"
-                  id="nome"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                   placeholder="Insira seu nome"
                   onInput={(e) => setName(e.currentTarget.value)}
@@ -174,7 +170,6 @@ export function NewBetModal({
                   type="text"
                   value={cpf}
                   onInput={handleCpfInput}
-                  id="cpf"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="000.000.000-00"
                   maxLength={14}
@@ -199,7 +194,6 @@ export function NewBetModal({
                     ))}
                   </div>
                   <p
-                    id="helper-text-explanation"
                     className={`mt-2 text-sm text-yellow-500 ${
                       !allNumbersAreValid ? "flex" : "hidden"
                     }`}
@@ -214,9 +208,8 @@ export function NewBetModal({
                   <div className="flex items-center mb-4">
                     <input
                       type="checkbox"
-                      id="surprise"
                       onInput={handleIsSurpriseChange}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 "
+                      className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 "
                     />
                     <label
                       htmlFor="default-checkbox"
@@ -235,7 +228,7 @@ export function NewBetModal({
             )}
             <button
               type="submit"
-              className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-white inline-flex items-center bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting || !allNumbersAreValid || cpf.length < 14}
             >
               Fazer Aposta

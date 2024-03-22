@@ -12,20 +12,38 @@ export interface Bet {
   surprise: boolean;
 }
 
+interface numberAndCount {
+  number: number;
+  count: number;
+}
+
 export const App = () => {
   const [numbersAreDrawn, setNumbersAreDrawn] = useState(false);
   const [winners, setWinners] = useState<Bet[]>([]);
   const [numbers, setNumbers] = useState<number[]>([]);
   const [validBets, setValidBets] = useState<Bet[]>([]);
   const [loading, setLoading] = useState(false);
+  const [numbersAndCount, setNumbersAndCount] = useState<numberAndCount[]>([]);
+  const [confirmation, setConfirmation] = useState(false);
 
   const makeNumbersDraw = async () => {
     setLoading(true);
     try {
+      setConfirmation(false);
       setNumbersAreDrawn(true);
-      const response: { data: { winners: Bet[]; sortedNumbers: number[] } } =
-        await api.post("/numbers-draw");
+      const response: {
+        data: {
+          winners: Bet[];
+          sortedNumbers: number[];
+          numbersAndCount: numberAndCount[];
+        };
+      } = await api.post("/numbers-draw");
       setValidBets([]);
+      setNumbersAndCount(
+        response.data.numbersAndCount.sort((a, b) => {
+          return b.count - a.count;
+        })
+      );
       setWinners(response.data.winners);
       setNumbers(response.data.sortedNumbers);
     } catch (e) {
@@ -57,7 +75,7 @@ export const App = () => {
           Demari Bets
         </h2>
       </header>
-      <div className="flex flex-col items-center p-10 space-y-4">
+      <div className="flex flex-col items-center p-8 space-y-4">
         <div
           className={`grid grid-cols-2 md:w-1/2 gap-8 ${
             numbersAreDrawn ? "hidden" : "block"
@@ -75,11 +93,19 @@ export const App = () => {
             <NewBetModal addValidBet={addAValidBet} />
           </Dialog.Root>
           <button
-            onClick={makeNumbersDraw}
+            onClick={
+              confirmation ? makeNumbersDraw : () => setConfirmation(true)
+            }
             disabled={numbersAreDrawn}
-            className="disabled:opacity-50 disabled:cursor-not-allowed py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700"
+            className={`${
+              confirmation
+                ? "bg-green-600 text-white  hover:bg-green-700"
+                : "bg-indigo-100 text-indigo-950 font-bold"
+            } disabled:opacity-50 disabled:cursor-not-allowed py-2 rounded-lg`}
           >
-            Sortear números
+            {confirmation
+              ? "✅ Clique aqui para confirmar sorteio"
+              : "🤑 Sortear números"}
           </button>
         </div>
 
@@ -89,72 +115,118 @@ export const App = () => {
               <Loader />
             </div>
           ) : (
-            <div className="flex flex-col text-white">
-              {numbers.length > 0 && (
-                <div className="flex flex-col items-center space-y-4">
-                  <h2 className="text-2xl font-medium">Números sorteados</h2>
-                  <div className="grid grid-cols-5 md:grid-cols-10 gap-4">
-                    {numbers.map((_, index) => (
-                      <input
-                        value={numbers[index]}
-                        disabled
-                        className="block w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-500 rounded-lg focus:ring-primary-500 focus:border-primary-500 "
-                      />
-                    ))}
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="flex flex-col gap-6 text-white">
+                {numbers.length > 0 && (
+                  <div className="flex flex-col items-center space-y-4">
+                    <h2 className="text-2xl font-medium">Números sorteados</h2>
+                    <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
+                      {numbers.map((_, index) => (
+                        <input
+                          value={numbers[index]}
+                          disabled
+                          className="block w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-500 rounded-lg focus:ring-primary-500 focus:border-primary-500 "
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-              {winners.length > 0 ? (
-                <div className="flex w-full flex-col items-center gap-6">
-                  <h2 className="text-2xl font-medium mt-4">Ganhadores</h2>
-                  <div className="flex flex-col gap-4">
-                    <div className="p-2 bg-slate-100 rounded-lg">
-                      <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
+                )}
+                {winners.length > 0 ? (
+                  <div className="flex w-full flex-col items-center gap-6">
+                    <h2 className="text-2xl font-medium">Ganhadores</h2>
+                    <div className="flex flex-col gap-4">
+                      <div className="p-2 bg-slate-100 rounded-lg">
+                        <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
+                          <thead className="text-xs text-slate-200 uppercase bg-slate-900">
+                            <tr>
+                              <th scope="col" className="px-6 py-3">
+                                Nome
+                              </th>
+                              <th
+                                scope="col"
+                                className="hidden md:table-cell px-6 py-3"
+                              >
+                                CPF
+                              </th>
+                              <th
+                                scope="col"
+                                className="hidden md:table-cell px-6 py-3"
+                              >
+                                Código
+                              </th>
+                              <th scope="col" className="px-12 py-3">
+                                Números
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {winners.map((winner) => (
+                              <tr className="bg-slate-100 border-t ">
+                                <th
+                                  scope="row"
+                                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+                                >
+                                  {winner.user_name}
+                                </th>
+                                <td className="px-6 py-4 hidden md:table-cell">
+                                  {winner.user_cpf}
+                                </td>
+                                <td className="px-6 py-4 hidden md:table-cell">
+                                  {winner.idUnico}
+                                </td>
+                                <td className="">
+                                  {winner.numbers.map((number) => (
+                                    <input
+                                      value={number}
+                                      disabled
+                                      className="w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-500 rounded-lg focus:ring-primary-500 focus:border-primary-500 "
+                                    />
+                                  ))}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-14 m-auto">
+                    <h3 className="text-lg text-white">
+                      Sem vencedores nesta rodada :(
+                    </h3>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col items-center gap-4">
+                {numbersAndCount.length > 0 && (
+                  <div className="flex flex-col items-center gap-4">
+                    <h2 className="text-2xl font-medium text-white">
+                      Mais Apostados
+                    </h2>
+                    <div className="p-2 bg-slate-100 rounded-lg ">
+                      <table className=" w-full text-sm text-left block max-h-60 overflow-y-scroll rtl:text-right text-gray-500">
                         <thead className="text-xs text-slate-200 uppercase bg-slate-900">
                           <tr>
-                            <th scope="col" className="px-6 py-3">
-                              Nome
+                            <th scope="col" className="px-2 py-2">
+                              Número
                             </th>
-                            <th
-                              scope="col"
-                              className="hidden md:table-cell px-6 py-3"
-                            >
-                              CPF
-                            </th>
-                            <th
-                              scope="col"
-                              className="hidden md:table-cell px-6 py-3"
-                            >
-                              Código
-                            </th>
-                            <th scope="col" className="px-12 py-3">
-                              Números
+                            <th scope="col" className="px-2 py-2">
+                              Apostas
                             </th>
                           </tr>
                         </thead>
-                        <tbody>
-                          {winners.map((winner) => (
+                        <tbody className="">
+                          {numbersAndCount.map((nnc) => (
                             <tr className="bg-slate-100 border-t ">
                               <th
                                 scope="row"
-                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+                                className="px-2 py-2 font-medium text-gray-900 whitespace-nowrap"
                               >
-                                {winner.user_name}
+                                {nnc.number}
                               </th>
-                              <td className="px-6 py-4 hidden md:table-cell">
-                                {winner.user_cpf}
-                              </td>
-                              <td className="px-6 py-4 hidden md:table-cell">
-                                {winner.idUnico}
-                              </td>
-                              <td className="">
-                                {winner.numbers.map((number) => (
-                                  <input
-                                    value={number}
-                                    disabled
-                                    className="w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-500 rounded-lg focus:ring-primary-500 focus:border-primary-500 "
-                                  />
-                                ))}
+                              <td className="px-2 py-2 font-medium text-gray-900 whitespace-nowrap">
+                                {nnc.count}
                               </td>
                             </tr>
                           ))}
@@ -162,20 +234,19 @@ export const App = () => {
                       </table>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className="w-full flex mt-14 justify-center">
-                  <h3 className="text-lg text-white">
-                    Sem vencedores nesta rodada :(
-                  </h3>
-                </div>
-              )}
-              <div className="flex w-full justify-center mt-10">
+                )}
+
+                <h3 className="text-base text-white font-semibold">
+                  Sorteios Realizados{": " + (numbers.length - 4)}
+                </h3>
+                <h3 className="text-base text-white font-semibold">
+                  Apostas Vencedoras{": " + winners.length}
+                </h3>
                 <button
-                  className="py-2 px-3 bg-yellow-500 text-white font-medium rounded-lg hover:bg-yellow-700"
+                  className="py-2 px-3 bg-yellow-600 text-white font-medium rounded-lg hover:bg-yellow-700"
                   onClick={() => setNumbersAreDrawn(false)}
                 >
-                  Voltar para modo apostas
+                  Voltar para apostas
                 </button>
               </div>
             </div>
